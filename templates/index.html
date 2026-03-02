@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Crime Risk Predictor</title>
+</head>
+
+<body>
+
+<h1>Crime Risk Predictor</h1>
+
+<label>City:</label>
+<select id="city"></select>
+
+<br><br>
+
+<label>Crime Type:</label>
+<select id="crime"></select>
+
+<br><br>
+
+<label>Gender:</label>
+<select id="gender">
+<option>Male</option>
+<option>Female</option>
+<option>Others</option>
+</select>
+
+<br><br>
+
+<label>Fatal Status:</label>
+<select id="fatal">
+<option>Fatal</option>
+<option>Non-Fatal</option>
+</select>
+
+<br><br>
+
+<label>Case Status:</label>
+<select id="case">
+<option>Pending</option>
+<option>Closed</option>
+</select>
+
+<br><br>
+
+<button onclick="predict()">Predict Risk</button>
+
+<h2 id="result"></h2>
+
+<script>
+
+fetch("/cities")
+.then(res => res.json())
+.then(data => {
+let city = document.getElementById("city");
+data.forEach(c=>{
+let option=document.createElement("option");
+option.text=c;
+city.add(option);
+});
+});
+
+fetch("/crimes")
+.then(res => res.json())
+.then(data => {
+let crime = document.getElementById("crime");
+data.forEach(c=>{
+let option=document.createElement("option");
+option.text=c;
+crime.add(option);
+});
+});
+
+function predict(){
+
+fetch("/calculate",{
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify({
+city:document.getElementById("city").value,
+crime:document.getElementById("crime").value,
+gender:document.getElementById("gender").value,
+fatal_status:document.getElementById("fatal").value,
+case_status:document.getElementById("case").value
+})
+})
+.then(res=>res.json())
+.then(data=>{
+document.getElementById("result").innerHTML =
+"Risk Level: "+data.risk_level+
+"<br>Risk %: "+data.exposure_risk_percent+
+"<br>Precautions: "+data.precautions;
+});
+
+}
+
+</script>
+
+</body>
+</html>
