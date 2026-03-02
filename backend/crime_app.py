@@ -106,7 +106,9 @@ def get_risk_level(risk):
     elif risk >= 40:
         return "Moderate"
     return "Low"
-
+@app.route("/", methods=["GET"])
+def home():
+    return "Crime Risk Predictor API is running!"
 # =====================================================
 # API ROUTES
 # =====================================================
